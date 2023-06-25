@@ -3,7 +3,7 @@ import altair as alt
 import math
 import pandas as pd
 import streamlit as st
-
+from rembg import remove
 """
 # Welcome to Streamlit!
 
@@ -15,6 +15,29 @@ forums](https://discuss.streamlit.io).
 In the meantime, below is an example of what you can do with just a few lines of code:
 """
 
+person_image = st.sidebar.file_uploader("Upload your image", type=["png", "jpg", "jpeg"])
+
+def convert_image(img):
+    buf = BytesIO()
+    img.save(buf, format="PNG")
+    byte_im = buf.getvalue()
+    return byte_im
+    
+def fix_image(upload):
+    image = Image.open(upload)
+    col1.write("Original Image :camera:")
+    col1.image(image)
+
+    fixed = remove(image)
+    col2.write("Fixed Image :wrench:")
+    col2.image(fixed)
+    st.sidebar.markdown("\n")
+    st.sidebar.download_button("Download fixed image", convert_image(fixed), "fixed.png", "image/png")
+
+if person_image is not None:
+    fix_image(upload=my_upload)
+else:
+    fix_image("./zebra.jpg")
 
 with st.echo(code_location='below'):
     total_points = st.slider("Number of points in spiral", 1, 5000, 2000)
@@ -36,3 +59,4 @@ with st.echo(code_location='below'):
     st.altair_chart(alt.Chart(pd.DataFrame(data), height=500, width=500)
         .mark_circle(color='#0068c9', opacity=0.5)
         .encode(x='x:Q', y='y:Q'))
+    
