@@ -5,6 +5,8 @@ import pandas as pd
 import streamlit as st
 from rembg import remove
 from PIL import Image
+from io import BytesIO
+
 """
 # Welcome to Streamlit!
 
@@ -16,7 +18,7 @@ forums](https://discuss.streamlit.io).
 In the meantime, below is an example of what you can do with just a few lines of code:
 """
 
-person_image = st.sidebar.file_uploader("Upload your image", type=["png", "jpg", "jpeg"])
+
 
 def convert_image(img):
     buf = BytesIO()
@@ -35,9 +37,11 @@ def fix_image(upload):
     st.sidebar.markdown("\n")
     st.sidebar.download_button("Download fixed image", convert_image(fixed), "fixed.png", "image/png")
 
+
+col1, col2 = st.columns(2)
+person_image = st.sidebar.file_uploader("Upload your image", type=["png", "jpg", "jpeg"])
 if person_image is not None:
     fix_image(upload=person_image)
-
 
 with st.echo(code_location='below'):
     total_points = st.slider("Number of points in spiral", 1, 5000, 2000)
